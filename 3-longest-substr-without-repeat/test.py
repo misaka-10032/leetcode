@@ -4,7 +4,6 @@ Created by misaka-10032 (longqic@andrew.cmu.edu).
 All rights reserved.
 
 """
-__author__ = 'misaka-10032'
 
 from solution import Solution
 
