@@ -14,6 +14,9 @@ class Solution(object):
         :rtype: int
         """
         l = len(nums)
+        if l == 0:
+            return 0
+
         scores = [[0 for _ in xrange(l)] for _ in xrange(l)]
         for i in xrange(l):
             left = nums[i-1] if i-1 >= 0 else 1
