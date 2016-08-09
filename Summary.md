@@ -1,4 +1,4 @@
-# Sort / bin-search
+# Bin-search
 
 1. Two Sum
 15. 3Sum
@@ -7,11 +7,16 @@
 34. Search for a Range
 35. Search Insert Position
 
-# Scan
+# Stack
 
 32. Longest Valid Parentheses
+42. Trapping Rain Water
 
-# Pointer
+# Array
+
+41. First Missing Positive
+
+# Linked list
 
 Be careful of alias; operation order matters. Figure out what pointers are needed.
 Consider edge cases separately.
@@ -22,9 +27,19 @@ Consider edge cases separately.
 24. Swap Nodes in Pairs
 25. Reverse Nodes in k-Group
 
-# Recursion
+# Tree
+
+# DFS/BFS
 
 37. Sudoku Solver
+39. Combination Sum
+40. Combination Sum II
+
+# Greedy
+
+44. Wildcard Matching
+
+# Dynamic Programming
 
 # Exponential probe
 
@@ -34,6 +49,15 @@ Consider edge cases separately.
 
 30. Substring with Concatenation of All Words
 
+# Numbers
+
+43. Multiply Strings
+
 # Game
 
 36. Valid Sudoku
+
+# State Machine
+
+10. Regular Expression Matching
+
