@@ -15,6 +15,7 @@
 # Array
 
 41. First Missing Positive
+48. Rotate Image
 
 # Linked list
 
@@ -34,6 +35,9 @@ Consider edge cases separately.
 37. Sudoku Solver
 39. Combination Sum
 40. Combination Sum II
+45. Jump Game II
+46. Permutations
+47. Permutations II
 
 # Greedy
 
@@ -48,10 +52,12 @@ Consider edge cases separately.
 # Hash
 
 30. Substring with Concatenation of All Words
+49. Group Anagrams
 
 # Numbers
 
 43. Multiply Strings
+50. Pow(x, n)
 
 # Game
 
