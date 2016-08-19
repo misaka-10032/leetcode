@@ -27,16 +27,24 @@ class LRUCache(object):
         self.cap = capacity
         self.lru = self.mru = None
 
-    def _adjust_node(self, node):
-        if node is self.mru:
-            """ Don't need to move to last """
+    def _insert(self, node):
+        if not self.lru and not self.mru:
+            self.lru = self.mru = node
             return
 
+        old_mru = self.mru
+        old_mru.next = node
+        node.prev = old_mru
+        node.next = None
+        self.mru = node
+
+    def _remove(self, node):
+        if not node:
+            return
         if node is self.lru:
-            new_lru = node.next
-            if new_lru:
-                new_lru.prev = None
-                self.lru = new_lru
+            self.lru = self.lru.next
+        if node is self.mru:
+            self.mru = self.mru.prev
 
         prev = node.prev
         next = node.next
@@ -45,12 +53,6 @@ class LRUCache(object):
         if next:
             next.prev = prev
 
-        old_mru = self.mru
-        old_mru.next = node
-        node.prev = old_mru
-        node.next = None
-        self.mru = node
-
     def get(self, key):
         """
         :rtype: int
@@ -58,7 +60,8 @@ class LRUCache(object):
         if key not in self.kv:
             return -1
         node = self.kv[key]
-        self._adjust_node(node)
+        self._remove(node)
+        self._insert(node)
         return node.val
 
     def set(self, key, val):
@@ -73,7 +76,8 @@ class LRUCache(object):
         if key in self.kv:
             node = self.kv[key]
             node.val = val
-            self._adjust_node(node)
+            self._remove(node)
+            self._insert(node)
             return
 
         node = Node(key, val)
