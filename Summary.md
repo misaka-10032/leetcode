@@ -112,6 +112,17 @@ Consider edge cases separately.
 
 36. Valid Sudoku
 
+# Design
+
+146. LRU Cache
+155. Min Stack
+173. Binary Search Tree Iterator
+295. Find Median from Data Stream
+297. Serialize and Deserialize Binary Tree
+341. Flatten Nested List Iterator
+380. Insert Delete GetRandom O(1)
+381. Insert Delete GetRandom O(1) - Duplicates allowed
+
 # State Machine
 
 10. Regular Expression Matching
