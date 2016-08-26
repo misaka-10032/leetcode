@@ -7,23 +7,21 @@ TODO: purpose
 
 
 class Solution(object):
-    def jump(self, nums):
+    def canJump(self, nums):
         """
         :type nums: List[int]
-        :rtype: int
+        :rtype: bool
         """
         if len(nums) <= 1:
-            return 0
-        k = 1                 # kth cohort
+            return True
         l_curr = 0            # lower bound of the cohort
         r_curr = nums[0]      # upper bound of the cohort
         last = len(nums) - 1
         while r_curr < last:
             r_next = r_curr
-            for i in xrange(l_curr, r_curr+1):
-                r_next = max(r_next, i+nums[i])
+            for i in xrange(l_curr, r_curr + 1):
+                r_next = max(r_next, i + nums[i])
             if r_next == r_curr:
-                return -1      # unreachable
-            k += 1
-            l_curr, r_curr = r_curr+1, r_next
-        return k
+                return False  # unreachable
+            l_curr, r_curr = r_curr + 1, r_next
+        return True

@@ -7,7 +7,7 @@
 * Input: p, type: str. Pattern.
 * Output type: bool. matched or not.
 
-## Solution
+## FSA
 
 * Finite state automaton (FSA)
  * `a.*b*c`
@@ -30,3 +30,14 @@
  * DFS every possible transition.
  * None state in the middle is immature mismatch.
  * Finally being none-transferable to `end` state is acceptable.
+ 
+## DP
+
+* Let `f[m][n]` be whether `[0, m)` chars in string matches `[0, n)` chars in pattern.
+* Discuss `p == *` or not.
+* If `p != *`, only one case makes a match
+  * previous pattern matches and the current char matches.
+* If `p == *`, three cases contributes to match
+  * `ba` vs `ba*`
+  * `a` vs `ab*`
+  * `aa` vs `a*`
