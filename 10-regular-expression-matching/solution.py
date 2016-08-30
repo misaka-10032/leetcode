@@ -21,7 +21,7 @@ class Solution(object):
         m = len(s)
         n = len(p)
         f = [[False] * n for _ in xrange(m)]
-        f[0][0] = matches(s[0], p[0])
+        f[0][0] = True  # ^ == ^
         for j in xrange(1, n):
             for i in xrange(m):
                 if p[j] != '*':

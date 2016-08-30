@@ -8,6 +8,8 @@ Created by misaka-10032 (longqic@andrew.cmu.edu).
 class Solution(object):
     def strStr(self, haystack, needle):
         """
+        Naive matching
+
         :type haystack: str
         :type needle: str
         :rtype: int
