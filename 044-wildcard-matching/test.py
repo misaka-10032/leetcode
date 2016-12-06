@@ -45,3 +45,20 @@ def test_3():
 def test_4():
     sol = Solution()
     assert sol.isMatch('hi', '*?')
+
+
+def test_5():
+    sol = Solution()
+    s = 'a' * 1000000
+    p = 'a*a*a*' + 'a' * 2000000 + 'b'
+    assert not sol.isMatch(s, p)
+
+
+def test_6():
+    sol = Solution()
+    assert not sol.isMatch('b', '*?*?*')
+
+
+def test_7():
+    sol = Solution()
+    assert not sol.isMatch('baab', '*?ab*')

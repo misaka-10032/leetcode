@@ -16,3 +16,4 @@
 * Maintain a dict that maps bucket index `b` to the element in it.
 * As bucket size is `t`, there could be at most one element in it.
 * Remove/insert elements from `S` when rolling the window.
+* Edge case `t=0` and `t<0`.

@@ -2,7 +2,7 @@
 
 [Description](https://leetcode.com/problems/trapping-rain-water/)
 
-* Use a stack to keep track of indices of bars.
+* Use a (decreasing) stack to keep track of indices of bars.
 * Each time a new bar comes, pop the previous bars and compute the water in that level.
 
 pop

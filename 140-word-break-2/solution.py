@@ -35,4 +35,5 @@ class Solution(object):
 
         n = len(s)
         cache = {}
-        return map(lambda sent: ' '.join(sent), _dfs(0))
+        res = map(lambda sent: ' '.join(sent), _dfs(0))
+        return res

@@ -28,3 +28,9 @@ def test_1():
     assert sol.containsNearbyAlmostDuplicate(nums, k, t)
     nums, k, t = [9, 5, 1, 3, 6, 9], 1, 1
     assert not sol.containsNearbyAlmostDuplicate(nums, k, t)
+
+
+def test_2():
+    sol = Solution()
+    nums, k, t = [-1, -1], 1, -1
+    assert not sol.containsNearbyAlmostDuplicate(nums, k, t)

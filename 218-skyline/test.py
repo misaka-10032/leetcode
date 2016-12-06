@@ -28,3 +28,10 @@ def test_2():
     buildings = [[2, 4, 7], [2, 4, 5], [2, 4, 6]]
     tgt = [[2, 7], [4, 0]]
     assert sol.getSkyline(buildings) == tgt
+
+
+def test_3():
+    sol = Solution()
+    buildings = [[0, 2, 3], [2, 5, 3]]
+    tgt = [[0, 3], [5, 0]]
+    assert sol.getSkyline(buildings) == tgt

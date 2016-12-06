@@ -1,8 +1,19 @@
-# encoding: utf-8
 """
-Created by misaka-10032 (longqic@andrew.cmu.edu).
-All rights reserved.
-
+* f[i][j] means if s[:i] matches p[:j]
+* if p[j-1] is not '*', it's easy
+* if p[j-1] is '*', here are the following cases
+* repeat start
+  * ab
+  * .*
+* repeat mid
+  * abb
+  * .*
+* ignore
+  * a
+  * ab*
+* Init
+  * f[0][0] = True
+  * f[0][j] = p[j-1] == '*' and f[0][j-2]
 """
 
 
@@ -13,28 +24,26 @@ class Solution(object):
         :type p: str
         :rtype: bool
         """
-        def matches(sc, pc):
-            return sc == pc or pc == '.'
 
-        s = '^' + s + '$'
-        p = '^' + p + '$'
+        def matches(c1, c2):
+            return c1 == '.' or c2 == '.' or c1 == c2
+
         m = len(s)
         n = len(p)
-        f = [[False] * n for _ in xrange(m)]
-        f[0][0] = True  # ^ == ^
-        for j in xrange(1, n):
-            for i in xrange(m):
-                if p[j] != '*':
-                    f[i][j] = i >= 1 and f[i-1][j-1] and matches(s[i], p[j])
+        f = [[False] * (n + 1) for _ in xrange(m + 1)]
+        f[0][0] = True
+        for j in xrange(2, n + 1):
+            f[0][j] = p[j - 1] == '*' and f[0][j - 2]
+
+        for i in xrange(1, m + 1):
+            for j in xrange(1, n + 1):
+                if p[j - 1] != '*':
+                    f[i][j] = matches(s[i - 1], p[j - 1]) and f[i - 1][j - 1]
                 else:
-                    f[i][j] = False
-                    # s:  ba
-                    # p: ba*
-                    f[i][j] |= f[i][j-1]
-                    # s:   a
-                    # p: ab*
-                    f[i][j] |= j >= 2 and f[i][j-2]
-                    # s: aa
-                    # p: a*
-                    f[i][j] |= i >= 1 and f[i-1][j] and matches(s[i], p[j-1])
-        return f[m-1][n-1]
+                    if matches(s[i - 1], p[j - 2]) and (f[i - 1][j - 1] or f[i - 1][j]):
+                        f[i][j] = True
+                        continue
+                    if j >= 2 and f[i][j - 2]:
+                        f[i][j] = True
+                        continue
+        return f[m][n]

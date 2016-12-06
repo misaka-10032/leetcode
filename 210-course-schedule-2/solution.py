@@ -2,41 +2,52 @@
 """
 Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
+It's actually the reverse topological order. Maintain
+
+* remained
+* heads
+* inlinks
+* outlinks
+* order
+
 """
+
+from collections import defaultdict
 
 
 class Solution(object):
-    def dfs(self, k):
-        self.time_recorder[k] = None
-        self.timer += 1
-        start = self.timer
-        for adj in self.graph[k]:
-            if adj not in self.time_recorder:
-                self.dfs(adj)
-        end = self.timer
-        self.time_recorder[k] = start, end
-        self.top_order.append(k)
-
     def findOrder(self, numCourses, prerequisites):
         """
         :type numCourses: int
         :type prerequisites: List[List[int]]
         :rtype: List[int]
         """
-        self.graph = {i: [] for i in xrange(numCourses)}
-        for p, q in prerequisites:
-            self.graph[p].append(q)
-        self.time_recorder = {}
-        self.timer = 0
-        self.top_order = []
-        for i in xrange(numCourses):
-            if i not in self.time_recorder:
-                self.dfs(i)
-        for i in xrange(numCourses):
-            t1, t2 = self.time_recorder[i]
-            for j in self.graph[i]:
-                tt1, tt2 = self.time_recorder[j]
-                if not (t1 <= tt1 <= tt2 <= t2 or t1 > tt2):
-                    return []
-        return self.top_order
+        remained = set(xrange(numCourses))
+        outlinks = defaultdict(set)
+        inlinks = defaultdict(set)
+        for c1, c2 in prerequisites:
+            outlinks[c1].add(c2)
+            inlinks[c2].add(c1)
+
+        heads = set()
+        for c in remained:
+            if not inlinks[c]:
+                heads.add(c)
+
+        order = []
+        while heads:
+            u = heads.pop()
+            order.append(u)
+            remained.remove(u)
+            for v in outlinks[u]:
+                inlinks[v].remove(u)
+                if not inlinks[v]:
+                    heads.add(v)
+                    del inlinks[v]
+            del outlinks[u]
+
+        # unresolved dependencies
+        if remained:
+            return []
+
+        return order[::-1]

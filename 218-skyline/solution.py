@@ -2,10 +2,31 @@
 """
 Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
+* For each edge, we need to know
+  * its x val
+  * its height (y)
+  * whether it's left or right
+* We want to move lower edge up
+* Sort each edge by (x, not is_left, height)
+  * tricky 1: it's ok to not move up y.prev, as long as x.prev == x.curr,
+    because finally we are able to clean them up.
+  * tricky 2: but if it's on the right, we don't hurry popping it.
+* Maintain a counter mapping height to how many times it appears.
+* ctr += 1 when we meet a left edge
+* ctr -= 1 when we meet a right edge
+* Maintain a heap to record the current highest building.
+  * We want max heap, so we push -y
+* When ctr goes to 0, remove the element from heap.
+  * The trick to remove from heap is delayed remove
+  * As we have ctr here, if not ctr[heap[0]], then it should be removed.
+  * Don't actually need a remove set, ctr is enough.
+* Final trick to merge `edges` to `res`:
+  * push the first valid edge
+  * later ones compare with the last element of `res`
 """
 
 import heapq
+from collections import Counter
 
 
 class Solution(object):
@@ -17,35 +38,38 @@ class Solution(object):
         if not buildings:
             return []
 
-        points = []
-        for l, r, y in buildings:
-            # point is like (x, y)
-            points.append([l, y])
-            points.append([r, y])
-
-        points = sorted(points)
-        # building element is like (l, r, y)
-        # heap element is like (-y, r)
-        heap, i = [], 0
-        for p in points:
-            while heap and heap[0][1] <= p[0]:
-                heapq.heappop(heap)
-            while i < len(buildings) and buildings[i][0] <= p[0]:
-                heapq.heappush(heap, (-buildings[i][2], buildings[i][1]))
-                i += 1
-            if heap:
-                p[1] = -heap[0][0]
+        edges = []
+        for xl, xr, y in buildings:
+            edges.append([xl, y, True])
+            edges.append([xr, y, False])
+        edges = sorted(edges, key=lambda e: (e[0], not e[2], e[1]))
+        ctr = Counter()  # y's here are normal
+        heap = []  # y's here are negated
+        for i, (x, y, is_left) in enumerate(edges):
+            # push
+            if is_left:
+                if not ctr[y]:
+                    heapq.heappush(heap, -y)
+                ctr[y] += 1
             else:
-                p[1] = 0
+                ctr[y] -= 1
 
-        # TODO: can even optimize this into previous loop
-        r = [[points[0][0], points[0][1]]]
-        for p in points:
-            if p[0] == r[-1][0] and p[1] > r[-1][1]:
-                r[-1][1] = p[1]
-                continue
-            if p[1] == r[-1][1]:
-                continue
-            r.append([p[0], p[1]])
+            # pop
+            while heap and not ctr[-heap[0]]:
+                heapq.heappop(heap)
 
-        return r
+            # update
+            edges[i][1] = -heap[0] if heap else 0
+
+        i = 0
+        while i < len(edges)-1 and edges[i+1][0] == edges[i][0]:
+            i += 1
+        res = [[edges[i][0], edges[i][1]]]
+        while i < len(edges):
+            while i < len(edges) and edges[i][1] == res[-1][1]:
+                i += 1
+            while i < len(edges) and edges[i][0] == res[-1][0]:
+                i += 1
+            res.append([edges[i][0], edges[i][1]])
+            i += 1
+        return res

@@ -17,6 +17,13 @@ class TreeNode:
         return 'TreeNode({})'.format(self.val)
 
 
+def build_nodes(l):
+    nodes = {}
+    for v in l:
+        nodes[v] = TreeNode(v)
+    return nodes
+
+
 def deserialize(string):
     if string == '{}':
         return None

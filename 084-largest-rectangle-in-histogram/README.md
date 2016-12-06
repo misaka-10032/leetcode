@@ -19,6 +19,8 @@
   * Curr is the rightmost reach from stack tops.
   * Leftmost is tricky; it's one plus next element of stack top.
   * e.g. `2, 6, 3, 4, 3`, curr is last, stack is `2, 3`, leftmost is 6, next of 2.
+  * `lb = S[-1]+1`, inclusive left bound
+  * `rb = i`, exclusive right bound
 * When it's __equal__, pop the previous and push the rightmost one as boundary for the upcoming.
 
 ```

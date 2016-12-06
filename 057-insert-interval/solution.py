@@ -22,8 +22,6 @@ class Interval(object):
 class Solution(object):
     def insert(self, intervals, newInterval):
         """
-        Assuming intervals are already sorted according to start
-
         :type intervals: List[Interval]
         :type newInterval: Interval
         :rtype: List[Interval]
@@ -31,25 +29,34 @@ class Solution(object):
         if not intervals:
             return [newInterval]
 
-        r = []
-        phase = 1
-        start = newInterval.start
-        end = newInterval.end
-        for interval in intervals:
-            if interval.end < start:
-                # stay in phase 1
-                r.append(interval)
-                continue
-            if interval.start > end:
-                if phase == 1 or phase == 2:
-                    phase = 3
-                    r.append(Interval(start, end))
-                r.append(interval)
-                continue
-            if phase == 1:
-                phase = 2
-                start = min(start, interval.start)
-            end = max(end, interval.end)
-        if phase == 1 or phase == 2:
-            r.append(Interval(start, end))
-        return r
+        n = len(intervals)
+        i = 0
+        res = []
+
+        # try to find the merge point
+        while i < n and intervals[i].end < newInterval.start:
+            res.append(intervals[i])
+            i += 1
+
+        if i == n:
+            res.append(newInterval)
+            return res
+
+        # 2 possibilities
+        # 1. we can merge the intervals
+        # 2. the new interval simply skipped
+        if intervals[i].start > newInterval.end:
+            res.append(newInterval)
+        else:
+            start = min(intervals[i].start, newInterval.start)
+            end = max(intervals[i].end, newInterval.end)
+            while i < n and intervals[i].start <= newInterval.end:
+                end = max(intervals[i].end, newInterval.end)
+                i += 1
+            res.append(Interval(start, end))
+
+        while i < n:
+            res.append(intervals[i])
+            i += 1
+
+        return res

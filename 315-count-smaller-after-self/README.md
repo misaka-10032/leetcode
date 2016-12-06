@@ -1,6 +1,14 @@
 # Count of Smaller Numbers After Self
 
-## Binary Indexed Tree
+## Frequency Table
+
+* Fix-valued Frequency Table for Range Queries
+  * val list
+  * Binary Indexed Tree (BIT) of freq
+  * val's are sorted, idx can be found with binary search
+  * range sum query with BIT
+
+## Solution
 
 * Sort the unique values
 
@@ -10,7 +18,8 @@
 
 `1(0), 2(1), 5(2), 6(3)`
 
-* Scan from back; keep track of frequency of numbers
+* Scan __the original__ from back; keep track of frequency of numbers.
+* Return `res` also reversely.
 
 ```
 Incoming: 1
@@ -48,3 +57,8 @@ freq  1 0 2 1
 prefix sum [0, 1): 1
 freq  1 1 2 1
 ```
+
+## Debug
+
+* `BITree.prefix()` is inclusive, but `FreqTable.prefix()` is exclusive.
+* Should reverse `res` at last, as we scanned reversely.

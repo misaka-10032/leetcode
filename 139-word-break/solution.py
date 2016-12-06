@@ -2,7 +2,8 @@
 """
 Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
+* f[i] denotes if s[:i] is compound word
+* Easier expression but a little bit counter intuitive
 """
 
 
@@ -18,14 +19,23 @@ class Solution(object):
         if not wordDict:
             return False
 
-        n = len(s)
-        f = [False] * (n+1)
-        f[0] = True
-        for i in xrange(1, n+1):
-            for word in wordDict:
-                if not s.endswith(word, 0, i):
-                    continue
-                f[i] |= f[i-len(word)]
-                if f[i]:
+        wordDict = set(wordDict)
+        min_len = 999999999
+        max_len = -1
+        for word in wordDict:
+            min_len = min(min_len, len(word))
+            max_len = max(max_len, len(word))
+
+        m = len(s)
+        f = [False] * (m+1)
+        f[0] = True  # empty word is step under all others
+        # k is len of prefix
+        for k in xrange(1, m+1):
+            # l is suffix len of prefix
+            for l in xrange(min_len, max_len+1):
+                if k-l < 0:
                     break
-        return f[n]
+                f[k] = f[k-l] and s[k-l:k] in wordDict
+                if f[k]:
+                    break
+        return f[-1]

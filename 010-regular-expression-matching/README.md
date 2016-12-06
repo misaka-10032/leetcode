@@ -16,9 +16,9 @@
   * previous pattern matches and the current char matches.
   * Bellman equation: `f[i][j] = f[i-1][j-1] and matches(s[i], p[j])`
 * If `p == *`, three cases contributes to match
-  * `ba` vs `ba*`: `f[i][j] |= f[i][j-1]`
-  * `a` vs `ab*`: `f[i][j] |= f[i][j-2]`
-  * `aa` vs `a*`: `f[i][j] |= f[i-1][j-1] and matches(s[i], p[j-1])`
+  * `ba` vs `ba*`: `f[i][j] |= f[i][j-1]` (match one).
+  * `a` vs `ab*`: `f[i][j] |= f[i][j-2]` (ignore).
+  * `aa` vs `a*`: `f[i][j] |= f[i-1][j-1] and matches(s[i], p[j-1])` (continue).
 * Init
   * `f[0][0] = True`
   * `f[>0][0] = False`

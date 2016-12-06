@@ -6,8 +6,15 @@
 ![](newton.png)
 
 $$
-\frac{y_0-y_+}{y_0^2-x} = 2 \\
-y_+ = \frac{1}{2}(y_0+\frac{x}{y_0})
+\frac{-f(y_i)}{y_{i+1}-y_i} = f'(y_i) \\
+$$
+
+$$
+\begin{align*}
+y_{i+1} &= y_i - \frac{f(y_i)}{f'(y_i)} 
+\\&= y_i - \frac{y_i^2-x}{2y_i}
+\\&= \frac{1}{2}(y_i + x/y_i)
+\end{align*}
 $$
 
 * Init with `y=x`
