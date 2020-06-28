@@ -9,7 +9,7 @@
 
 * Think carefully about what should be the stack elements.
 
-32\. Longest Valid Parentheses\n
+32\. Longest Valid Parentheses <br/>
 42\. Trapping Rain Water <br/>
 84\. Largest Rectangle in Histogram <br/>
 155\. Min Stack <br/>
