@@ -9,5 +9,7 @@
 ### Heap
 
 * The other way is to maintain a heap of at most $k$ elements.
-* Edge case could be tricky, don't try to do that unless being asked to.
 * Complexity would be $O(n \log k)$
+* `heapq` requires the elements to be comparable. Two workarounds:
+  * Creates a wrapper class with `__lt__` and `__gt__` implemented.
+  * Use a tuple `(node.val, id(node), node)`.

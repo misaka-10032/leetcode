@@ -1,47 +1,44 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
+import heapq
+from typing import List
 
 
-# Definition for singly-linked list.
-class ListNode(object):
-    def __init__(self, x):
-        self.val = x
-        self.next = None
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
 
-class Solution(object):
-    def mergeKLists(self, lists):
-        """
-        Boring.
-        Just use list then sort it.
-        Heap would be slower, because every time it needs
-        to sift down from top.
+class ComparableListNode:
+    def __init__(self, node: ListNode):
+        self.node = node
 
-        :type lists: List[ListNode]
-        :rtype: ListNode
-        """
-        all = []
-        # lists = list(lists)  # copy if necessary
-        for lst in lists:
-            while lst:
-                all.append(lst)
-                lst = lst.next
+    def __lt__(self, other):
+        return self.node.val < other.node.val
 
-        all = sorted(all, key=lambda node: node.val)
-        if not all:
-            return None
+    def __gt__(self, other):
+        return self.node.val > other.node.val
 
-        head = all[0]
-        head.next = None
-        prev = node = head
-        for i in xrange(1, len(all)):
-            node = all[i]
-            prev.next = node
-            prev = node
-        node.next = None
+    def __eq__(self, other):
+        return self.node.val == other.node.val
 
-        return head
+
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        iters: List[ComparableListNode] = []
+        for it in lists:
+            if it is not None:
+                iters.append(ComparableListNode(it))
+        heapq.heapify(iters)
+
+        it = dummy = ListNode()
+        while iters:
+            it_in: ComparableListNode = heapq.heappop(iters)
+            it.next = it_in.node
+            it = it.next
+            it_in.node = it_in.node.next
+            if it_in.node is not None:
+                heapq.heappush(iters, it_in)
+        return dummy.next

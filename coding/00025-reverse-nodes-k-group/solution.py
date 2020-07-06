@@ -1,77 +1,48 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
+from typing import Tuple
 
 
-# Definition for singly-linked list.
-class ListNode(object):
-    def __init__(self, x):
-        self.val = x
-        self.next = None
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
 
-class Solution(object):
-    def reverse_group(self, start, end):
-        q, p = None, start
-        while p is not end:
-            p_next = p.next
-            p.next = q
-            q, p = p, p_next
-        if p is not None:
-            p.next = q
-
-    def reverseKGroup(self, head, k):
-        """
-        :type head: ListNode
-        :type k: int
-        :rtype: ListNode
-        """
-        if head is None:
+def move_k(pre_left: ListNode, k: int):
+    for _ in range(k):
+        if pre_left is not None:
+            pre_left = pre_left.next
+        else:
             return None
+    return pre_left
 
-        p = head
-        # try first k. probe edge case
-        cnt = 0
-        while p:
-            cnt += 1
-            if cnt >= k:
-                break
-            p = p.next
 
-        # edge case: n < k
-        if not p:
-            return head
+def swap(left: ListNode, right: ListNode) -> Tuple[ListNode, ListNode]:
+    next_right = right.next
+    right.next = left
+    return right, next_right
 
-        pre_next, p_next = head, p.next
-        self.reverse_group(head, p)
-        head = p
 
-        while True:
-            pre = pre_next
-            q = p = p_next
-            # probe group end
-            cnt = 0
-            while p:
-                cnt += 1
-                if cnt >= k:
-                    break
-                p = p.next
+def swap_k(pre_left: ListNode, k: int):
+    left = init_left = pre_left.next
+    if left is None:
+        return
+    right = left.next
+    for _ in range(k-1):
+        if right is None:
+            break
+        left, right = swap(left, right)
+    # last_right, last_next_right = left, right
+    pre_left.next, init_left.next = left, right
 
-            # ignore residue
-            if not p:
-                # connect group
-                pre.next = q
-                break
 
-            # connect group, the next group head changes
-            pre.next = p
-            # preserve p_next before reverse inside
-            p_next = p.next
-            self.reverse_group(q, p)
-            # prepare next
-            pre_next = q
-
-        return head
+class Solution:
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        pre_left = dummy = ListNode(next=head)
+        while pre_left is not None:
+            if move_k(pre_left, k) is not None:
+                swap_k(pre_left, k)
+            pre_left = move_k(pre_left, k)
+        return dummy.next
