@@ -40,6 +40,9 @@
 * Python tricks
   * zip: `zip([a1, a2], [b1, b2])` becomes `[(a1, b1), (a2, b2)]`.
   * unzip: `zip(*[(a1, b1), (a2, b2)])` converts it back.
+* The solution is neat, but the worst case can be slow, e.g.
+  * `a -> b -> c -> d -> ...`
+  * The complexity could be `O(n^2)`
 
 ### DFS
 
