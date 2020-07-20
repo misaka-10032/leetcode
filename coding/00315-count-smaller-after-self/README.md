@@ -4,9 +4,9 @@
 
 * Fix-valued Frequency Table for Range Queries
   * val list
-  * Binary Indexed Tree (BIT) of freq
+  * Binary Indexed Tree (BIT) or Segment Tree (ST) of freq
   * val's are sorted, idx can be found with binary search
-  * range sum query with BIT
+  * range sum query with BIT / ST
 
 ## Solution
 

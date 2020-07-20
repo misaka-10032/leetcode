@@ -1,5 +1,14 @@
 # Range Sum Query 2D - Mutable
 
+https://leetcode.com/problems/range-sum-query-2d-mutable/
+
+## Solution -- Segment Tree
+
+A region can be divided into top-left, top-right, bottom-left, and bottom-right. We store redundant sums in the
+sub-regions, and query the sums within the sub-regions.
+
+## Solution -- Bit Indexed Tree
+
 * Similar to 1d.
 * For `bit[i][j]`
   * Denote `i`'s parent as `pi = i & -i`
