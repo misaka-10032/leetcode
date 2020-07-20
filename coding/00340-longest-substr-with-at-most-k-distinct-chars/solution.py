@@ -1,38 +1,36 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
-
-from collections import Counter
+from typing import Dict
 
 
-class Solution(object):
-    def lengthOfLongestSubstringKDistinct(self, s, k):
-        """
-        :type s: str
-        :type k: int
-        :rtype: int
-        """
-        if k == 0:
+class Solution:
+    def _inc_counter(self, counters: Dict[str, int], char: str):
+        cnt = counters.get(char, 0)
+        cnt += 1
+        counters[char] = cnt
+
+    def _dec_counter(self, counters: Dict[str, int], char: str):
+        cnt = counters.get(char, 0)
+        cnt -= 1
+        if cnt > 0:
+            counters[char] = cnt
+        else:
+            assert cnt == 0
+            counters.pop(char)
+
+    def lengthOfLongestSubstringKDistinct(self, s: str, k: int) -> int:
+        if not s or not k:
             return 0
-
-        ctr = Counter()
-        front = rear = 0
-        n = len(s)
-        best = 0
-        while rear < n and front < n:
-            # increasing phase
-            while (front < n and
-                   (len(ctr)+1 <= k or s[front] in ctr)):
-                ctr[s[front]] += 1
-                front += 1
-            # current window is [rear, front)
-            best = max(best, front-rear)
-            # decreasing phase
-            ctr[s[rear]] -= 1
-            if ctr[s[rear]] == 0:
-                del ctr[s[rear]]
-            rear += 1
-        return best
+        # start and end defines a window of s[start:end]
+        start = end = 0
+        counters = {}
+        max_len = 0
+        while end < len(s):
+            self._inc_counter(counters, s[end])
+            end += 1
+            while len(counters) > k:
+                self._dec_counter(counters, s[start])
+                start += 1
+            max_len = max(max_len, end - start)
+        return max_len

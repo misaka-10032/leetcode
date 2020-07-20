@@ -1,5 +1,7 @@
 # Longest Substring with At Most K Distinct Characters
 
+https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/
+
 ## Description
 
 * Given a string, find the length of the longest substring `T` that
@@ -9,11 +11,8 @@
 
 ## Solution
 
-* Two pointer
-  * `front` tries to get more distinct chars
-  * `rear` shift one at a time
-* Maintain a counter for the current window
-* Boundary constraints: `front < n` and `rear < n`
-* Edge case: `k = 0`
-* Don't need to align `front` and `rear`.
-
+* Two pointers
+  * `end` tries to get one more char.
+  * `start` shifts until the window is valid (i.e. contains at most k chars).
+* Maintain a counter class for the current window, and remove the 0 counters timely.
+* if `k == 0`, we can early return at the beginning.

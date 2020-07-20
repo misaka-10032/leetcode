@@ -9,6 +9,7 @@
 
 ## Stack
 
+* In-order traversal with stack.
 * Initially push all the left descendants of `root` onto stack.
 * Whenever goes to a node (with `next`), push all the left
   descendants of right subtree onto stack.

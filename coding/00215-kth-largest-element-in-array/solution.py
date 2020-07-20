@@ -1,46 +1,45 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
-
-from random import randint
+import random
+from typing import List
 
 
-class Solution(object):
-    def findKthLargest(self, nums, k):
-        """
-        :type nums: List[int]
-        :type k: int
-        :rtype: int
-        """
-        def partition(i, j):
-            """ partition range [i, j].
-                put nums[i] in location and
-                return its location. """
-            # introduce randomness to get rid of worst case
-            k = randint(i, j)
-            nums[i], nums[k] = nums[k], nums[i]
-            while i < j:
-                while i < j and nums[j] >= nums[i]:
-                    j -= 1
-                nums[i], nums[j] = nums[j], nums[i]
-                while i < j and nums[i] <= nums[j]:
-                    i += 1
-                nums[i], nums[j] = nums[j], nums[i]
-            return i
+class Solution:
+    def _pivot(self, nums: List[int], start: int, end: int) -> int:
+        # Put nums[start] to its right place. Keep the smaller (or equal) numbers
+        # on its left and the bigger numbers on the right. Return its index (order).
+        assert start < end
+        if start + 1 == end:
+            return start
+        val = nums[start]
+        # The first gt after start
+        gt = start + 1
+        while gt < end and nums[gt] <= val:
+            gt += 1
+        # The first le after gt
+        le = gt + 1
+        while le < end:
+            while le < end and nums[le] > val:
+                le += 1
+            if le < end:
+                nums[gt], nums[le] = nums[le], nums[gt]
+                gt += 1
+                le += 1
+        pivot_idx = gt - 1
+        nums[start], nums[pivot_idx] = nums[pivot_idx], val
+        return pivot_idx
 
-        n = len(nums)
-        # convert the problem to find k-th smallest, where k is index.
-        k = n - k
-        i = 0
-        j = n - 1
-        while True:
-            p = partition(i, j)
-            if k < p:
-                j = p - 1
-            elif k > p:
-                i = p + 1
-            else:
-                return nums[p]
+    def _find_kth(self, nums: List[int], k: int, start: int, end: int) -> int:
+        target_idx = random.randrange(start, end)
+        nums[start], nums[target_idx] = nums[target_idx], nums[start]
+        idx = self._pivot(nums, start, end)
+        if k > idx:
+            return self._find_kth(nums, k, idx + 1, end)
+        elif k < idx:
+            return self._find_kth(nums, k, start, idx)
+        else:  # k == idx
+            return nums[k]
+
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        return self._find_kth(nums, len(nums) - k, 0, len(nums))
