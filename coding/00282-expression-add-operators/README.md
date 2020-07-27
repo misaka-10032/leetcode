@@ -1,20 +1,25 @@
 # Expression Add Operators
 
-### Solution
+https://leetcode.com/problems/expression-add-operators/
 
-* The only bad guy is `*`
-* We eval while proceeding, but need to keep track of
-  `regret` variable, which, if the upcoming is `*`, we
-  can regret the previously added value, and update with
-  the new value.
+## Solution
 
-### Naive
+The problem can been taken as adding `('', '+', '-', '*')` in-between the digits to achieve `target`. As leading 0's are
+not allowed, we need to take special care before adding `''`.
 
-* Add operator before current position.
-* `eval` result at last
-* No consecutive `0`s: `00` is invalid.
-* Slow
-* Refactor to memorized `dfs`
-  * get rid of global tracking of `curr` and `res`
-  * Encode the result in return value
-* Still slow, because `eval` is slow.
+The eval result can be tracked on the fly. See also the
+[calculator problem](https://leetcode.com/problems/basic-calculator-ii/). To summarize, an expression can be taken as
+the sum of products. We finalize and reset the current number when we see an operator. We multiply this number to the
+current product if the operator is `*`. We aggregate the sum if the operator is `+` or `-`.
+
+The recursive problem can be defined as
+
+```
+def _search(self, num: str, target: int, idx: int,
+            curr_num: int, curr_prod: int, curr_sum: int,
+            ops: List[str], results: List[str]):
+```
+
+`curr_num`, `curr_prod`, `curr_sum` are the states used to track the eval result. `ops` is used to recover the final
+expression. We can rely on Python's `eval`, but this is slow because we need to waste `O(n)` to make the expression that
+does not equal our target.
