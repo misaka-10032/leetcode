@@ -1,50 +1,59 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
+from typing import List
 
 
-class Solution(object):
-    def maximalRectangle(self, matrix):
-        """
-        :type matrix: List[List[str]]
-        :rtype: int
-        """
-        if not matrix:
-            return 0
-        if not matrix[0]:
+class Solution:
+    def maximalRectangle(self, matrix: List[List[str]]) -> int:
+        if not matrix or not matrix[0]:
             return 0
         m = len(matrix)
         n = len(matrix[0])
 
-        best = 0
-        height = [0] * n
-        left = [0] * n
+        # The first 0 on top.
+        top = [-1] * n
+        # The first col on the left that has less height.
+        left = [-1] * n
+        # The first col on the right that has less height.
         right = [n] * n
-        for i in xrange(m):
-            for j in xrange(n):
-                if matrix[i][j] == '1':
-                    height[j] += 1
+
+        max_area = 0
+        for i in range(m):
+            for j in range(n):
+                if matrix[i][j] == '0':
+                    top[j] = i
+
+            # The index of the first 0 on the left.
+            leftmost = -1
+            for j in range(n):
+                if matrix[i][j] == '0':
+                    # Reset the left boundary.
+                    left[j] = -1
+                    leftmost = j
                 else:
-                    height[j] = 0
-            leftmost = 0
-            for j in xrange(n):
-                if matrix[i][j] == '1':
-                    # compare leftmost from previous row and current row
+                    # Potentially update the left boundary due to a 0
+                    # on this row.
                     left[j] = max(left[j], leftmost)
-                else:
-                    left[j] = 0       # don't affect the next row when doing max
-                    leftmost = j + 1  # prepare for the next 1
+
+            # The index of the first 0 on the right.
             rightmost = n
-            for j in reversed(xrange(n)):
-                if matrix[i][j] == '1':
-                    right[j] = min(right[j], rightmost)
+            for j in range(n - 1, -1, -1):
+                if matrix[i][j] == '0':
+                    # Reset the right boundary.
+                    right[j] = n
+                    rightmost = j
                 else:
-                    right[j] = n      # don't affect the next row when doing min
-                    rightmost = j     # prepare for the prev 1
-            for j in xrange(n):
-                if matrix[i][j] == '1':
-                    best = max(best, (right[j]-left[j])*height[j])
-        return best
+                    # Potentially update the right boundary due to a 0
+                    # on this row.
+                    right[j] = min(right[j], rightmost)
+
+            # Find the max area.
+            for j in range(n):
+                if matrix[i][j] == '0':
+                    continue
+                height = i - top[j]
+                width = right[j] - left[j] - 1
+                max_area = max(max_area, width * height)
+
+        return max_area

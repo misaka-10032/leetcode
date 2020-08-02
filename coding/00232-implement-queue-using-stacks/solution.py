@@ -1,51 +1,44 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
-
-TODO: purpose
-"""
-
-from collections import deque
 
 
-class Queue(object):
+class MyQueue:
+
     def __init__(self):
         """
-        initialize your data structure here.
+        Initialize your data structure here.
         """
-        self.s_in = deque()
-        self.s_out = deque()
+        self._input_stack = []
+        self._output_stack = []
 
-    def push(self, x):
+    def push(self, x: int) -> None:
         """
-        :type x: int
-        :rtype: nothing
+        Push element x to the back of queue.
         """
-        self.s_in.append(x)
+        self._input_stack.append(x)
 
-    def pop(self):
-        """
-        :rtype: nothing
-        """
-        if self.s_out:
-            self.s_out.pop()
+    def _maybe_prepare_output_stack(self):
+        if self._output_stack:
             return
-        while self.s_in:
-            self.s_out.append(self.s_in.pop())
-        self.s_out.pop()
+        while self._input_stack:
+            self._output_stack.append(self._input_stack.pop())
 
-    def peek(self):
+    def pop(self) -> int:
         """
-        :rtype: int
+        Removes the element from in front of queue and returns that element.
         """
-        if self.s_out:
-            return self.s_out[-1]
-        while self.s_in:
-            self.s_out.append(self.s_in.pop())
-        return self.s_out[-1]
+        self._maybe_prepare_output_stack()
+        return self._output_stack.pop()
 
-    def empty(self):
+    def peek(self) -> int:
         """
-        :rtype: bool
+        Get the front element.
         """
-        return not(self.s_in or self.s_out)
+        self._maybe_prepare_output_stack()
+        return self._output_stack[-1]
+
+    def empty(self) -> bool:
+        """
+        Returns whether the queue is empty.
+        """
+        return not self._input_stack and not self._output_stack
