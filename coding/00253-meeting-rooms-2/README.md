@@ -8,7 +8,7 @@
 
 ## Solution - map only
 
-* Well, heap is kind of waste full.
+* Well, heap is kind of wasteful.
 * Actually we only maintain a map `time` to `cnt`
   * `+1` at starting point
   * `-1` at end point

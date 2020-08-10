@@ -1,6 +1,10 @@
 # Sliding Window Maximum
 
-* Monotonically decreasing priority queue. Before inserting,
-  * Pop those out of boundary at left
-  * Pop those not large enough at right
-* Store the index in order to know the window boundary
+https://leetcode.com/problems/sliding-window-maximum/
+
+## Solution
+
+Maintain a special queue that has the following properties.
+
+* The elements in the queue are strictly decreasing.
+* The elements will be flushed if the timestamp passes its time-to-live.

@@ -1,54 +1,45 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-* Use stack
-* Cares about the v-shape
-* ignore the initial climbing like /
-* while dropping like \, push index into stack
-  * keep pushing when height is strictly decreasing
-* while climbing
-  * pop until val of heap top is strictly greater the current val.
-  * While popping, accumulate the water volume.
-  * Popping it is like fill the space with solid stage.
-* Finally, push the new stage into stack
-* Be careful how to compute the gap and the height of the current strip of water.
-  * gap between `i` and `j` is `j-i-1`
-  * strip height is `h[j] - prev`
-  * prev starts with 0, and becomes h[j] while popping.
-* Edge case:
-  * After popping, if stack is not empty yet, we need to compute the final strip
-    from right to left, like this
-    __
-      |  _
-      |_| |
-  * Gap size is computed the same
-  * Strip height is `h[i] - prev` (now it's `i`).
-"""
-
-from collections import deque
+import dataclasses
+from typing import List
 
 
-class Solution(object):
-    def trap(self, height):
-        """
-        :type height: List[int]
-        :rtype: int
-        """
-        n = len(height)
-        stack = deque()
-        i = 0
-        v = 0
-        while i < n:
-            while i < n and (not stack or height[i] < height[stack[-1]]):
-                stack.append(i)
-                i += 1
-            prev = 0
-            while stack and i < n and height[i] >= height[stack[-1]]:
-                j = stack.pop()
-                v += (i-j-1) * (height[j]-prev)
-                prev = height[j]
-            if stack and i < n:
-                j = stack[-1]
-                v += (i-j-1) * (height[i]-prev)
-        return v
+@dataclasses.dataclass
+class Elevation:
+    right: int
+    top: int
+    delta: int
+
+
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        # Maintain a stack of effective elevations. When a new elevation
+        # is flat, we update the right boundary of the last elevation.
+        # When a new elevation decreases in height, we push it to the stack.
+        # When a new elevation increases in height, we pop until the top of
+        # the stack has higher elevation. In the mean time, we aggregate the
+        # water that we have raised.
+        stack = []
+        tot = 0
+        for left, top in enumerate(height):
+            right = left + 1
+            if not stack:
+                stack.append(Elevation(right, top, top))
+                continue
+
+            if top == stack[-1].top:
+                stack[-1].right = right
+            elif top < stack[-1].top:
+                stack[-1].delta = stack[-1].top - top
+                stack.append(Elevation(right, top, top))
+            else:  # top >= stack[-1].top
+                while stack and top >= stack[-1].top:
+                    prev = stack.pop()
+                    tot += (left - prev.right) * prev.delta
+                if stack:
+                    delta = top - (stack[-1].top - stack[-1].delta)
+                    tot += (left - stack[-1].right) * delta
+                    stack[-1].delta = stack[-1].top - top
+                stack.append(Elevation(right, top, top))
+        return tot

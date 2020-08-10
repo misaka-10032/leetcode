@@ -1,38 +1,37 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
-
-from collections import deque
+import collections
+from typing import List
 
 
-class Solution(object):
-    def maxSlidingWindow(self, nums, k):
-        """
-        :type nums: List[int]
-        :type k: int
-        :rtype: List[int]
-        """
-        n = len(nums)
-        if n < k or k <= 0:
-            return []
+class DecreasingGarbageCollectionQueue:
+    def __init__(self, ttl: int):
+        self._ttl = ttl
+        self._q = collections.deque()
 
-        q = deque()
-        for i in xrange(k):
-            while q and nums[q[-1]] <= nums[i]:
-                q.pop()
-            q.append(i)
+    def append(self, t: int, v: int):
+        # First, clean up the stale elements.
+        while self._q and self._q[0][0] + self._ttl <= t:
+            self._q.popleft()
+        # Second, make sure the values are decreasing.
+        while self._q and self._q[-1][1] <= v:
+            self._q.pop()
+        self._q.append((t, v))
 
-        res = [nums[q[0]]]
-        for i in xrange(k, n):
-            # pop those out of window first
-            while q and q[0] <= i - k:
-                q.popleft()
-            # ensure decreasing
-            while q and nums[q[-1]] <= nums[i]:
-                q.pop()
-            q.append(i)
-            res.append(nums[q[0]])
-        return res
+    def peek(self) -> int:
+        return self._q[0][1]
+
+
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        # Construct a queue that has decreasing values, and only contains the
+        # element in a time window.
+        q = DecreasingGarbageCollectionQueue(k)
+        result = []
+        for i, v in enumerate(nums):
+            q.append(i, v)
+            if i < k - 1:
+                continue
+            result.append(q.peek())
+        return result
