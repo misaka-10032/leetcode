@@ -1,6 +1,6 @@
 # Lowest Common Ancestor of a Binary Tree
 
-### Naive Two Pass
+## Two Pass Solution
 
 * Keep track of parents of nodes by iterating the tree.
 * Generate a path to root for `p` and `q`.
@@ -11,7 +11,7 @@
   * Go reversely through two list and find `5` is the last equal element,
     which is LCA.
 
-### Tricky One Pass
+## One Pass Solution
 
 * Iterate the tree once.
 * Each node tells whether it has `p` or `q`.
