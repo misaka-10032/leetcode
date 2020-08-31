@@ -1,17 +1,23 @@
 # Shortest Distance from All Buildings
 
-* Each 0 marks an empty land which you can pass by freely.
-* Each 1 marks a building which you cannot pass through.
-* Each 2 marks an obstacle which you cannot pass through.
+https://leetcode.com/problems/shortest-distance-from-all-buildings/
+
+## Solution
+
+Build a map of distances (`dists[i][j]`) from all the buildings (`1`) to the empty lands (`0` at `(i, j)`). We iterate
+the buildings, and do a BFS to compute the distances for that building. The distance can be simply added to the global
+`dists` array.
+
+There is one minor optimization to save the search space. If some empty land cannot be reached by a certain building, we
+can mark it as an obstacle (`2`). 
+
+For BFS, we generally prefer to set a point visited before pushing it to the queue, because we can save time and space
+for multiple equal-length paths to the same point
 
 ```
-1 - 0 - 2 - 0 - 1
-|   |   |   |   |
-0 - 0 - 0 - 0 - 0
-|   |   |   |   |
-0 - 0 - 1 - 0 - 0
+  -------> path1
+ | +---+
+ | |   |
+ | +---+  target
+ v path2
 ```
-
-* Build ONE building on land, such that we have smallest
-  distance to all the other buildings.
-* Return the smallest building; -1 if impossible.

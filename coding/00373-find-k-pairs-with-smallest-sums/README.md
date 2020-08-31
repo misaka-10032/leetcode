@@ -1,18 +1,16 @@
 # Find K Pairs with Smallest Sums
 
+https://leetcode.com/problems/find-k-pairs-with-smallest-sums/
+
 ## Solution
 
-* Need to keep track of candidates.
-* `pos[i] = j` means the next candidate would be `(i, j)`
-  if we pick `i` as first element.
-* Given `pos`, each time we need to find min among `m` candidates
-  `j1, j2, ..., jm`, who has smallest `nums[i]+nums[j]`.
-* Min heap can be used to keep track of min's.
-  Push all valid `nums1[i]+nums1[j]`s to heap.
-  Sum along is not enough. We also need to keep track of `i`, `j`.
-* It's possible that in the middle of the process, some `j`
-  becomes `>= n`. In that case, we don't push the sum to heap.
-* Edge case
-  * some `j >= n`
-  * `nums1` or `nums2` is empty
+First, we fix the first element of the first array, and pair it with all the elements in the second array. The pairs
+will be put into a min heap.
 
+Then we keep popping from the heap to find the minimal pairs. After popping, we will try to proceed in the first array,
+if it still has more elements to come.
+
+Let's denote the length of the first array to be `m` and that for the second array to be `n`. Then the time complexity
+will be `log n`. In order to make the algorithm run faster, we can possibly swap the two arrays, such that the second
+array is shorter. We also need to track this bit, because we also need to revert the pair in the result if two arrays
+are swapped.

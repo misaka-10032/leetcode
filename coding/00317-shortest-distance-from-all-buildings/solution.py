@@ -1,64 +1,49 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-* for each building, accumulate its distance to all
-  possible lands
-* find the land with min dist
-* special care for unreachable
-  * if some land is unreachable to any of the building,
-    it can be taken as obstacle. rationale is that if
-    it's unreachable, it can also not be used as intermediate
-    path by other buildings (proof by contradictory).
-"""
-
-from collections import deque
+import collections
+from typing import List
 
 
-class Solution(object):
-    def shortestDistance(self, grid):
-        """
-        :type grid: List[List[int]]
-        :rtype: int
-        """
-        def bfs_acc(i, j):
-            Q = deque([(i, j, 0)])
-            visited = [[False] * n for _ in xrange(m)]
-            visited[i][j] = True
-            while Q:
-                i, j, d = Q.popleft()
-                for di, dj in dirs:
-                    ii = i + di
-                    jj = j + dj
-                    if ii < 0 or ii >= m or \
-                       jj < 0 or jj >= n or \
-                       visited[ii][jj] or grid[ii][jj] != 0:
-                        continue
-                    visited[ii][jj] = True
-                    dist[ii][jj] += d + 1
-                    Q.append((ii, jj, d+1))
-
-            for i in xrange(m):
-                for j in xrange(n):
-                    if not visited[i][j] and grid[i][j] == 0:
-                        grid[i][j] = 2
-
+class Solution:
+    def shortestDistance(self, grid: List[List[int]]) -> int:
         if not grid or not grid[0]:
             return -1
+        m, n = len(grid), len(grid[0])
 
-        dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-        m = len(grid)
-        n = len(grid[0])
-        dist = [[0] * n for _ in xrange(m)]
-        for i in xrange(m):
-            for j in xrange(n):
+        dists = [[0 for _ in range(n)] for _ in range(m)]
+
+        def _bfs(i0: int, j0: int):
+            visited = [[False for _ in range(n)] for _ in range(m)]
+            queue = collections.deque([(i0, j0, 0)])
+            while queue:
+                i1, j1, d = queue.popleft()
+                d += 1
+                for di, dj in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                    i2, j2 = i1 + di, j1 + dj
+                    if (0 <= i2 < m and 0 <= j2 < n and grid[i2][j2] == 0 and
+                            not visited[i2][j2]):
+                        visited[i2][j2] = True
+                        dists[i2][j2] += d
+                        queue.append((i2, j2, d))
+            for i in range(m):
+                for j in range(n):
+                    if grid[i][j] == 0 and not visited[i][j]:
+                        # Such empty land is unreachable. Treat it as obstacle
+                        grid[i][j] = 2
+
+        for i in range(m):
+            for j in range(n):
                 if grid[i][j] == 1:
-                    bfs_acc(i, j)
+                    _bfs(i, j)
 
-        inf = 999999999
-        smallest = inf
-        for i in xrange(m):
-            for j in xrange(n):
-                if grid[i][j] == 0:
-                    smallest = min(smallest, dist[i][j])
-        return smallest if smallest != inf else -1
+        shortest = -1
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] != 0:
+                    continue
+                if shortest > 0:
+                    shortest = min(shortest, dists[i][j])
+                else:
+                    shortest = dists[i][j]
+        return shortest

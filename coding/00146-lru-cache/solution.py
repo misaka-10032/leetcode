@@ -1,99 +1,31 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
+import collections
 
 
-class Node(object):
-    def __init__(self, key, val):
-        self.key = key
-        self.val = val
-        self.prev = self.next = None
+class LRUCache:
 
+    def __init__(self, capacity: int):
+        self._capacity = capacity
+        self._ordered_dict = collections.OrderedDict()
 
-class LRUCache(object):
-    def __init__(self, capacity):
-        """
-        dict maps from key to node
-        nodes form a doubly linked list
-        lru <-> ... <-> mru
-
-        :type capacity: int
-        """
-        self.kv = {}
-        self.sz = 0
-        self.cap = capacity
-        self.lru = self.mru = None
-
-    def _adjust_node(self, node):
-        if node is self.mru:
-            """ Don't need to move to last """
-            return
-
-        if node is self.lru:
-            new_lru = node.next
-            if new_lru:
-                new_lru.prev = None
-                self.lru = new_lru
-
-        prev = node.prev
-        next = node.next
-        if prev:
-            prev.next = next
-        if next:
-            next.prev = prev
-
-        old_mru = self.mru
-        old_mru.next = node
-        node.prev = old_mru
-        node.next = None
-        self.mru = node
-
-    def get(self, key):
-        """
-        :rtype: int
-        """
-        if key not in self.kv:
+    def get(self, key: int) -> int:
+        maybe_val = self._ordered_dict.pop(key, None)
+        if maybe_val is None:
             return -1
-        node = self.kv[key]
-        self._adjust_node(node)
-        return node.val
+        self._ordered_dict[key] = maybe_val
+        return maybe_val
 
-    def set(self, key, val):
-        """
-        :type key: int
-        :type val: int
-        :rtype: nothing
-        """
-        if self.cap <= 0:
+    def put(self, key: int, value: int) -> None:
+        if self._capacity <= 0:
             return
 
-        if key in self.kv:
-            node = self.kv[key]
-            node.val = val
-            self._adjust_node(node)
+        maybe_old_val = self._ordered_dict.pop(key, None)
+        if maybe_old_val is not None:
+            self._ordered_dict[key] = value
             return
 
-        node = Node(key, val)
-        self.kv[key] = node
-
-        if not self.lru and not self.mru:
-            """ Init """
-            self.lru = self.mru = node
-        else:
-            """ Add to end """
-            self.mru.next = node
-            node.prev = self.mru
-            self.mru = node
-
-        self.sz += 1
-        if self.sz > self.cap:
-            """ Evict """
-            old_lru = self.lru
-            new_lru = old_lru.next
-            new_lru.prev = None
-            self.lru = new_lru
-            self.kv.pop(old_lru.key)
-            self.sz -= 1
+        if len(self._ordered_dict) == self._capacity:
+            self._ordered_dict.popitem(last=False)
+        self._ordered_dict[key] = value

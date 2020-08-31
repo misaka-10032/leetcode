@@ -1,65 +1,37 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
+import bisect
+from typing import List
 
 
-class Solution(object):
-    def _find_pivot(self, nums):
-        li, ri = 0, len(nums)-1
-        while li < ri:
-            mi = (li+ri)//2
-            if nums[mi] > nums[ri]:
-                # pivot will be on the right, exclusive
-                li = mi + 1
-            elif nums[mi] < nums[ri]:
-                # pivot will be on the left, inclusive
-                ri = mi
-            else:
-                # as there's no duplicate
-                assert mi == ri
-        assert li == ri
-        return li
-
-    def _find_within(self, nums, target, li, ri):
-        while li < ri:
-            mi = (li+ri)//2
-            if target > nums[mi]:
-                li = mi + 1
-            elif target < nums[mi]:
-                ri = mi - 1
-            else:
-                return mi
-        if li == ri and nums[li] == target:
-            return li
-        else:
+class Solution:
+    def _find_target(self, nums: List[int], target: int, start: int,
+                     end: int) -> int:
+        pos = bisect.bisect_left(nums, target, start, end)
+        if pos == end or nums[pos] != target:
             return -1
+        return pos
 
-    def search(self, nums, target):
-        """
-        :type nums: List[int]
-        :type target: int
-        :rtype: int
-        """
+    def _find_pivot(self, nums: List[int], target: int) -> int:
+        left, right = 0, len(nums) - 1
+        while left < right:
+            mid = (left + right + 1) // 2
+            if nums[mid] > nums[right]:
+                left = mid
+            else:
+                if mid > 0 and nums[mid] < nums[mid - 1]:
+                    return mid
+                right = mid - 1
+        return left
+
+    def search(self, nums: List[int], target: int) -> int:
         if not nums:
             return -1
-
-        if len(nums) == 1:
-            if nums[0] == target:
-                return 0
-            else:
-                return -1
-
-        p = self._find_pivot(nums)
-
-        if p == 0:
-            return self._find_within(nums, target, 0, len(nums) - 1)
-
-        if nums[p] <= target <= nums[-1]:
-            return self._find_within(nums, target, p, len(nums) - 1)
-        elif nums[0] <= target <= nums[p-1]:
-            return self._find_within(nums, target, 0, p - 1)
+        if nums[0] <= nums[-1]:
+            return self._find_target(nums, target, 0, len(nums))
+        pivot_idx = self._find_pivot(nums, target)
+        if target >= nums[0]:
+            return self._find_target(nums, target, 0, pivot_idx)
         else:
-            return -1
+            return self._find_target(nums, target, pivot_idx, len(nums))
