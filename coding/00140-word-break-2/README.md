@@ -1,22 +1,9 @@
 # Word Break II
 
-* Represent `curr` as list of words in `dict`.
-* The state includes the start pointer `k`.
+https://leetcode.com/problems/word-break-ii/
 
-### Cache
+## Solution
 
-* Some patten can appear multiple times, cache it
-  * e.g. `'abab ababab'`
-* `cache[k]` is a `list` of all combinations of `s[k:]`.
-* `s[k:k+l] in dict ? cache[k].extend(map(..., f[k+l]))`
-
-### Memorized dfs vs dp
-
-* dfs could terminate early
-
-```
-a...a b a..a
-```
-
-* culprit `b` would have dfs terminate early, but
-  dp would keep trying the suffixes.
+Similar to the [previous](https://leetcode.com/problems/word-break/) problem, we use a recursive function `_search(i)`
+to return the result. Instead of returning a bool, we return a list of valid sentences at `s[i:]`. We need to track the
+possible decompositions after being searched to save future searches.

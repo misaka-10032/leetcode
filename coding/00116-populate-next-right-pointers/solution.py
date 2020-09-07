@@ -1,45 +1,26 @@
+#!/usr/bin/env python3
 # encoding: utf-8
+
 """
-Created by misaka-10032 (longqic@andrew.cmu.edu).
-
-TODO: purpose
+# Definition for a Node.
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None, next: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
 """
 
 
-# Definition for binary tree with next pointer.
-class TreeLinkNode(object):
-    def __init__(self, x):
-        self.val = x
-        self.left = None
-        self.right = None
-        self.next = None
-
-
-from collections import deque
-
-
-class Solution(object):
-    def connect(self, root):
-        """
-        :type root: TreeLinkNode
-        :rtype: nothing
-        """
-        if not root:
-            return None
-        level = deque([root])
-        cnt = 1
-        finish = False
-        while not finish:
-            prev = level.popleft()
-            if not prev.left:
-                finish = True
-            level.append(prev.left)
-            level.append(prev.right)
-            for _ in xrange(1, cnt):
-                curr = level.popleft()
-                level.append(curr.left)
-                level.append(curr.right)
-                prev.next = curr
-                prev = curr
-            prev.next = None
-            cnt <<= 1
+class Solution:
+    def connect(self, root: 'Node') -> 'Node':
+        probe = head = root
+        while probe:
+            while probe:
+                if probe.left and probe.right:
+                    probe.left.next = probe.right
+                    if probe.next:
+                        probe.right.next = probe.next.left
+                probe = probe.next
+            probe = head = head.left
+        return root

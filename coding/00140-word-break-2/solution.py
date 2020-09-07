@@ -1,39 +1,27 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
+from typing import List
 
 
-class Solution(object):
-    def wordBreak(self, s, wordDict):
-        """
-        :type s: str
-        :type wordDict: Set[str]
-        :rtype: List[str]
-        """
-        def _dfs(k):
-            """ returns list(list(str)) as all possible sentences
-                using s[k:]. """
-            if k in cache:
-                return cache[k]
-            res = []
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
+        cache = [None for _ in range(len(s))]
+        # Searches all the possible sentences starting at i (aka s[i:]).
+        def _search(i: int) -> List[str]:
+            if cache[i] is not None:
+                return cache[i]
+            sentences = []
             for word in wordDict:
-                if s.startswith(word, k):
-                    if k + len(word) == n:
-                        res.append([word])
+                if s.startswith(word, i):
+                    if i+len(word) == len(s):
+                        sentences.append(word)
                     else:
-                        after = _dfs(k+len(word))
-                        for sent in after:
-                            res.append([word] + sent)
-            cache[k] = res
-            return res
-
-        if not s or not wordDict:
+                        sentences_after_word = _search(i+len(word))
+                        for sentence in sentences_after_word:
+                            sentences.append(' '.join([word, sentence]))
+            cache[i] = sentences
+            return sentences
+        if not s:
             return []
-
-        n = len(s)
-        cache = {}
-        res = map(lambda sent: ' '.join(sent), _dfs(0))
-        return res
+        return _search(0)

@@ -1,28 +1,21 @@
 # Closest Binary Search Tree Value II
 
-Given a non-empty binary search tree and a target value, find k values in the BST that are closest to the target.
-
-Note:
-Given target value is a floating point.
-You may assume k is always valid, that is: k ≤ total nodes.
-You are guaranteed to have only one unique set of k values in the BST that are closest to the target.
-Follow up:
-Assume that the BST is balanced, could you solve it in less than O(n) runtime (where n = total nodes)?
+https://leetcode.com/problems/closest-binary-search-tree-value-ii/
 
 ## Solution
 
-* Find the closest first
-* Find `k-1` predecessors and successors
+First, let's find the first element that is >= `target`. This element will be used as an upper bound. It could be empty.
+Then let's find lower bound. If the upper bound exists, the lower bound will be its predecessor. Otherwise, the lower
+bound will be the last node in the tree. Then, we keep probing the upper bound and the lower bound until we find `k`
+elements.
 
-* Predecessor
-
-![](bst-pred.png)
+The process requires us to find the successor and the predecessor of a given node. To do this, we also need to track the
+parent nodes in a stack. The following illustrations explain how to find them.
 
 * Successor
 
+![](bst-pred.png)
+
+* Predecessor
+
 ![](bst-succ.png)
-
-## Debug
-
-* Tricky to find `parents` of `best`.
-* Tricky to stop finding `preds` or `succs` when we run out of elements.
