@@ -1,27 +1,19 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
+from typing import List
 
 
-class Solution(object):
-    def subsets(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: List[List[int]]
-        """
-        cnt = 1 << len(nums)
-        all = []
-        for i in xrange(cnt):
-            j = i
-            idx = 0
-            curr = []
-            while j > 0:
-                if j % 2 == 1:
-                    curr.append(nums[idx])
-                j >>= 1
-                idx += 1
-            all.append(curr)
-        return all
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        def _search(i: int, comb: List[int]):
+            if i == len(nums):
+                result.append(comb[:])
+                return
+            _search(i+1, comb)
+            comb.append(nums[i])
+            _search(i+1, comb)
+            comb.pop()
+        _search(0, [])
+        return result

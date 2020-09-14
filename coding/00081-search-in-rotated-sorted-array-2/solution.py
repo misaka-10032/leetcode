@@ -1,52 +1,53 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
+import bisect
+from typing import List
 
 
-class Solution(object):
-    def search(self, nums, target):
-        """
-        :type nums: List[int]
-        :type target: int
-        :rtype: bool
-        """
+class Solution:
+    def _tighten(self, nums: List[int], left: int, right: int) -> int:
+        while left < right and nums[left] == nums[right]:
+            right -= 1
+        return right
+
+    def _find_target(self, nums: List[int], left: int, right: int, target: int) -> bool:
+        p = bisect.bisect_left(nums, target, left, right + 1)
+        return p <= right and nums[p] == target
+
+    def search(self, nums: List[int], target: int) -> bool:
         if not nums:
             return False
 
-        n = len(nums)
-        l, r = 0, n-1
-        while l < r and nums[l] >= nums[r]:
-            m = (l + r) // 2
-            if nums[m] == target:
-                return True
-            if nums[m] > nums[l]:
-                l = m + 1
-            elif nums[m] < nums[l]:
-                r = m - 1
-            else:
-                l += 1
-        # now pivot is l
-        p = l
+        left = 0
+        right = len(nums) - 1
+        while left < right:
+            right = self._tighten(nums, left, right)
+            if nums[left] < nums[right]:
+                return self._find_target(nums, left, right, target)
 
-        # make side decision easier
-        if nums[l] == target or nums[r] == target:
-            return True
+            mid = (left + right + 1) // 2
+            mid_left = self._tighten(nums, left, mid - 1)
+            for c in (left, mid_left):
+                if nums[c] == target:
+                    return True
+            if nums[left] < target < nums[mid_left]:
+                return self._find_target(nums, left, mid_left, target)
+            if nums[left] > nums[mid_left]:
+                if target > nums[left] or target < nums[mid_left]:
+                    right = mid_left
+                    continue
 
-        if target > nums[-1]:
-            # left side
-            l, r = 0, p
-        else:
-            # right side
-            l, r = p, n-1
-        while l < r:
-            m = (l + r) // 2
-            if nums[m] < target:
-                l = m + 1
-            elif nums[m] > target:
-                r = m - 1
-            else:
-                return True
-        return nums[l] == target
+            right = self._tighten(nums, mid, right)
+            for c in (mid, right):
+                if nums[c] == target:
+                    return True
+            if nums[mid] < target < nums[right]:
+                return self._find_target(nums, mid, right, target)
+            if nums[mid] > nums[right]:
+                if target > nums[mid] or target < nums[right]:
+                    left = mid
+                    continue
+
+            return False
+        return nums[left] == target

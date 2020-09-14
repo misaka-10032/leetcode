@@ -1,29 +1,27 @@
+#!/usr/bin/env python3
 # encoding: utf-8
-"""
-Created by misaka-10032 (longqic@andrew.cmu.edu).
 
-TODO: purpose
-"""
+from typing import List
 
 
-class Solution(object):
-    def findMin(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
         if not nums:
             return 0
 
-        l = 0
-        r = len(nums)-1
-        while l < r and nums[l] > nums[r]:
-            m = (l+r) // 2
-            if nums[m] < nums[l]:
-                # p in left half, m inclusive
-                r = m
+        left = 0
+        right = len(nums) - 1
+        while left < right:
+            mid = (left + right + 1) // 2
+            if nums[left] > nums[mid - 1]:
+                right = mid - 1
+                continue
+            if nums[mid] > nums[right]:
+                left = mid
+                continue
+            if nums[left] < nums[right]:
+                return nums[left]
             else:
-                # p in right half, m exclusive
-                l = m + 1
-
-        return nums[l]
+                assert nums[mid] < nums[mid - 1]
+                return nums[mid]
+        return nums[left]

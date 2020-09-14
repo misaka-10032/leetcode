@@ -20,23 +20,20 @@ class Solution:
         left, right = 0, len(nums) - 1
         while left < right:
             mid = (left + right + 1) // 2
-            if nums[left] <= target <= nums[mid - 1]:
+            for c in (left, mid - 1, mid, right):
+                if nums[c] == target:
+                    return c
+            if nums[left] < target < nums[mid - 1]:
                 return self._find_target(nums, target, left, mid - 1)
-            if nums[mid] <= target <= nums[right]:
+            if nums[mid] < target < nums[right]:
                 return self._find_target(nums, target, mid, right)
+            if nums[left] > nums[mid - 1]:
+                if target > nums[left] or target < nums[mid - 1]:
+                    right = mid - 1
+                    continue
             if nums[mid] > nums[right]:
-                # Pivot is on the right range. The previous conditions
-                # failing means the target can only fall within this
-                # "pivot" range.
-                left = mid
-            else:
-                if mid > 0 and nums[mid] < nums[mid - 1]:
-                    # `mid` is pivot. Both ranges are ascending. However,
-                    # If the previous two condition fails, it means the
-                    # target cannot exist in this array.
-                    return -1
-                # Pivot is on the left range. The previous conditions
-                # failing means the target can only fall within the "pivot"
-                # range.
-                right = mid - 1
+                if target > nums[mid] or target < nums[right]:
+                    left = mid
+                    continue
+            return -1
         return left if nums[left] == target else -1
